@@ -74,6 +74,7 @@ $padding: 10px
     align-self: center
 
   form
+    height: 30px
     padding: $padding
     background-color: hsl(203, 94%, 61%)
 
