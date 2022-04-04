@@ -21,9 +21,14 @@
         </ul>
       </div>
     </div>
-    <button class="hide-button" @click="hideCompleted = !hideCompleted">
-      {{ hideCompleted ? "Show all" : "hideCompleted" }}
-    </button>
+    <div class="buttons-menu">
+      <button class="hide-button" @click="hideCompleted = !hideCompleted">
+        {{ hideCompleted ? "Show all" : "hideCompleted" }}
+      </button>
+      <button class="clear-button" @click="clearCompletedTodo()">
+        {{ "clearCompletedTodo" }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -48,6 +53,13 @@ const filteredTodo = computed(() => {
 function removeTodo(todo) {
   todos.value = todos.value.filter((t) => t !== todo);
 }
+function clearCompletedTodo() {
+  for (let i = 0; i < this.filteredTodo.length; ++i) {
+    if (this.filteredTodo[i].done) {
+      this.filteredTodo.splice(i, 1);
+    }
+  }
+}
 </script>
 
 <style scoped lang="sass">
@@ -65,13 +77,6 @@ $padding: 10px
 
   display: flex
   flex-direction: column
-
-  .hide-button
-    width: 150px
-
-    display: flex
-    justify-content: center
-    align-self: center
 
   form
     height: 30px
@@ -121,9 +126,21 @@ $padding: 10px
             flex-grow: 1
             text-align: left
             margin-left: 10px
+
+  .buttons-menu
+    display: flex
+    flex-direction: row
+    align-self: center
+
+    .hide-button .clear-button
+      width: 150px
+
+      display: flex
+      justify-content: center
+
 .header-todo-list
   border-bottom: 0.5px solid black
 .done
-  text-decoration: line-through
+  //text-decoration: line-through
   color: hsl(208, 100%, 86%)
 </style>
