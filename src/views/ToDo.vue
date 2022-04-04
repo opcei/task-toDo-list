@@ -9,13 +9,15 @@
     <div class="todos-list">
       <div class="header-todo-list">
         <span class="todo-header">To Do</span>
-        <div class="counter-todo">{{ filteredTodo.length }}</div>
+        <div class="counter-todo">{{ filteredTodos.length }}</div>
       </div>
       <div class="list">
         <ul>
-          <li v-for="todo in filteredTodo" :key="todo.id">
-            <input type="checkbox" v-model="todo.done" />
-            <span :class="{ done: todo.done }">{{ todo.text }}</span>
+          <li v-for="todo in filteredTodos" :key="todo.id">
+            <input type="checkbox" v-model="todo.isFinished" />
+            <span :class="{ isFinished: todo.isFinished }">
+              {{ todo.text }}
+            </span>
             <button @click="removeTodo(todo)">Remove</button>
           </li>
         </ul>
@@ -34,29 +36,37 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useTodos } from "@/stores/todos.js";
 
-let id = 0;
+const store = useTodos();
+
+let nextId = 0;
 
 const newTodo = ref("");
 const hideCompleted = ref(false);
-const todos = ref([]);
 
 function addTodo() {
   if (newTodo.value !== "") {
-    todos.value.push({ id: id++, text: newTodo.value, done: false });
+    store.todos.push({
+      id: nextId++,
+      text: newTodo.value,
+      isFinished: false,
+    });
   }
   newTodo.value = "";
 }
-const filteredTodo = computed(() => {
-  return hideCompleted.value ? todos.value.filter((t) => !t.done) : todos.value;
+const filteredTodos = computed(() => {
+  return hideCompleted.value
+    ? store.todos.filter((t) => !t.isFinished)
+    : store.todos;
 });
 function removeTodo(todo) {
-  todos.value = todos.value.filter((t) => t !== todo);
+  store.todos = store.todos.filter((t) => t !== todo);
 }
 function clearCompletedTodo() {
-  for (let i = 0; i < this.filteredTodo.length; ++i) {
-    if (this.filteredTodo[i].done) {
-      this.filteredTodo.splice(i, 1);
+  for (let i = 0; i < this.filteredTodos.length; ++i) {
+    if (this.filteredTodos[i].isFinished) {
+      this.filteredTodos.splice(i, 1);
     }
   }
 }
@@ -140,7 +150,7 @@ $padding: 10px
 
 .header-todo-list
   border-bottom: 0.5px solid black
-.done
+.isFinished
   //text-decoration: line-through
   color: hsl(208, 100%, 86%)
 </style>
