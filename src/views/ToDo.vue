@@ -23,13 +23,18 @@
         </ul>
       </div>
     </div>
-    <div class="buttons-menu">
-      <button class="hide-button" @click="hideCompleted = !hideCompleted">
+    <div class="buttons">
+      <button @click="hideCompleted = !hideCompleted">
         {{ hideCompleted ? "Show all" : "hideCompleted" }}
       </button>
-      <button class="clear-button" @click="clearCompletedTodo()">
+      <button @click="clearCompletedTodo()">
         {{ "clearCompletedTodo" }}
       </button>
+      <!--
+        <button @click="reset()">
+          {{ "resetStore" }}
+        </button>
+      -->
     </div>
   </div>
 </template>
@@ -40,7 +45,7 @@ import { useTodos } from "@/stores/todos.js";
 
 const store = useTodos();
 
-let nextId = 0;
+let nextId = 1;
 
 const newTodo = ref("");
 const hideCompleted = ref(false);
@@ -70,6 +75,10 @@ function clearCompletedTodo() {
     }
   }
 }
+/*function reset() {
+  store.$reset();
+  console.log(store.todos);
+}*/
 </script>
 
 <style scoped lang="sass">
@@ -137,20 +146,21 @@ $padding: 10px
             text-align: left
             margin-left: 10px
 
-  .buttons-menu
+  .buttons
     display: flex
-    flex-direction: row
+
     align-self: center
 
-    .hide-button .clear-button
-      width: 150px
+    button
+      width: 130px
 
       display: flex
       justify-content: center
 
 .header-todo-list
   border-bottom: 0.5px solid black
+
 .isFinished
-  //text-decoration: line-through
+  text-decoration: line-through
   color: hsl(208, 100%, 86%)
 </style>
