@@ -70,7 +70,6 @@ function addTodo() {
 function removeTodo(todo) {
   store.todos = store.todos.filter((t) => t !== todo);
 }
-
 function finished() {
   return store.todos.filter((todo) => todo.isFinished);
 }
