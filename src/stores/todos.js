@@ -6,26 +6,37 @@ export const useTodos = defineStore(
   "todos",
   () => {
     const todos = ref(useLocalStorage("todos", []));
-    /*state: () => ({
-      todos: ref(useLocalStorage("todos", ["123"])),
-    }),
 
-    if (localStorage.getItem("todosState")) {
-      pinia.state.value.todos = JSON.parse(localStorage.getItem("todosState"))
-    }
+    /*
+    let nextId = 0;
+    const hideCompleted = ref(true);
 
-  watch(
-    () => pinia.state.value.todos
-    (state) => {
-      localStorage.setItem("todosState", JSON.stringify(state))
-    },
-    { deep: true }
-  );*/
+    const addTodo = (text) => {
+      this.todos.push({ id: nextId++, text, isFinished: false });
+    };
+    /*
+    const filteredTodos = computed(() =>
+      hideCompleted.value ? this.todos.filter((t) => !t.isFinished) : this.todos
+    );
+    const removeTodo = (value) => {
+      this.todos = this.todos.filter((t) => t !== value);
+    };
+    const clearCompletedTodo = () => {
+      for (let i = this.todos.length - 1; i >= 0; --i) {
+        if (this.todos[i].isFinished) {
+          this.todos.splice(i, 1);
+        }
+      }
+    };
+    */
+
     return {
       todos,
+      //addTodo,
+      //filteredTodos,
+      //removeTodo,
+      //clearCompletedTodo,
     };
   },
-  {
-    persist: true,
-  }
+  { persist: true }
 );

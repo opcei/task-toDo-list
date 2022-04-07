@@ -24,31 +24,38 @@
       </div>
     </div>
     <div class="buttons">
-      <button @click="hideCompleted = !hideCompleted">
-        {{ hideCompleted ? "Show all" : "hideCompleted" }}
+      <button @click="show = 'all'">All</button>
+      <button @click="show = 'finished'">Complete</button>
+      <button @click="show = 'unfinished'">unComplete</button>
+      <button v-show="seeable" @click="clearCompletedTodo()">
+        Clear Completed To Do
       </button>
-      <button @click="clearCompletedTodo()">
-        {{ "clearCompletedTodo" }}
-      </button>
-      <!--
-        <button @click="reset()">
-          {{ "resetStore" }}
-        </button>
-      -->
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import { useTodos } from "@/stores/todos.js";
+import { useTodos } from "@/stores/todos";
 
 const store = useTodos();
-
-let nextId = 1;
-
 const newTodo = ref("");
-const hideCompleted = ref(false);
+
+let nextId = 0;
+const show = ref("all");
+const seeable = ref(true);
+
+/*
+function addTodo() {
+  if (newTodo.value !== "") {
+    store.addTodo({ id: nextId++, text: newTodo.value, isFinished: false });
+  }
+  newTodo.value = "";
+}
+function removeTodo(todo) {
+  store.removeTodo(todo);
+}
+*/
 
 function addTodo() {
   if (newTodo.value !== "") {
@@ -60,25 +67,32 @@ function addTodo() {
   }
   newTodo.value = "";
 }
-const filteredTodos = computed(() => {
-  return hideCompleted.value
-    ? store.todos.filter((t) => !t.isFinished)
-    : store.todos;
-});
 function removeTodo(todo) {
   store.todos = store.todos.filter((t) => t !== todo);
 }
+
+function finished() {
+  return store.todos.filter((todo) => todo.isFinished);
+}
+function unfinished() {
+  return store.todos.filter((todo) => !todo.isFinished);
+}
+const filteredTodos = computed(() => {
+  if (show.value === "finished") {
+    return finished();
+  } else if (show.value === "unfinished") {
+    return unfinished();
+  }
+  return store.todos;
+});
 function clearCompletedTodo() {
-  for (let i = 0; i < this.filteredTodos.length; ++i) {
-    if (this.filteredTodos[i].isFinished) {
-      this.filteredTodos.splice(i, 1);
+  for (let i = store.todos.length - 1; i >= 0; --i) {
+    if (store.todos[i].isFinished) {
+      store.todos.splice(i, 1);
     }
   }
 }
-/*function reset() {
-  store.$reset();
-  console.log(store.todos);
-}*/
+//function showButton() {}
 </script>
 
 <style scoped lang="sass">
@@ -152,15 +166,16 @@ $padding: 10px
     align-self: center
 
     button
-      width: 130px
-
       display: flex
       justify-content: center
+
+    .disabled
+      display: none
 
 .header-todo-list
   border-bottom: 0.5px solid black
 
 .isFinished
-  text-decoration: line-through
+  //text-decoration: line-through
   color: hsl(208, 100%, 86%)
 </style>
