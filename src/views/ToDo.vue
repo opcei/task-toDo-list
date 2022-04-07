@@ -24,12 +24,14 @@
       </div>
     </div>
     <div class="buttons">
-      <button @click="show = 'all'">All</button>
-      <button @click="show = 'finished'">Complete</button>
-      <button @click="show = 'unfinished'">unComplete</button>
-      <button v-show="seeable" @click="clearCompletedTodo()">
-        Clear Completed To Do
+      <button @click="(showComplete = false), (showActive = false)">All</button>
+      <button @click="(showComplete = true), (showActive = false)">
+        Complete
       </button>
+      <button @click="(showComplete = false), (showActive = true)">
+        unComplete
+      </button>
+      <button @click="clearCompletedTodo()">Clear Completed To Do</button>
     </div>
   </div>
 </template>
@@ -40,10 +42,10 @@ import { useTodos } from "@/stores/todos";
 
 const store = useTodos();
 const newTodo = ref("");
-
 let nextId = 0;
-const show = ref("all");
-const seeable = ref(true);
+
+const showComplete = ref(false);
+const showActive = ref(false);
 
 /*
 function addTodo() {
@@ -77,9 +79,9 @@ function unfinished() {
   return store.todos.filter((todo) => !todo.isFinished);
 }
 const filteredTodos = computed(() => {
-  if (show.value === "finished") {
+  if (showComplete.value) {
     return finished();
-  } else if (show.value === "unfinished") {
+  } else if (showActive.value) {
     return unfinished();
   }
   return store.todos;
@@ -91,7 +93,6 @@ function clearCompletedTodo() {
     }
   }
 }
-//function showButton() {}
 </script>
 
 <style scoped lang="sass">
